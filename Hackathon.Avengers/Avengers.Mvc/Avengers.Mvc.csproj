@@ -157,7 +157,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="ModelInit.cs" />
+    <Compile Include="Models\AzureProviderEntity.cs" />
     <Compile Include="Models\Provider.cs" />
+    <Compile Include="Models\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

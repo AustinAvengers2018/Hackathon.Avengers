@@ -5,6 +5,10 @@ using System.Web.Hosting;
 using Excel = Microsoft.Office.Interop.Excel;
 using Avengers.Mvc.Models;
 using System.Runtime.InteropServices;
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
+using System.Web.Configuration;
 
 namespace Avengers.Mvc
 {
@@ -13,16 +17,107 @@ namespace Avengers.Mvc
 
         public static void LoadData()
         {
-            var Providers = LoadExcel();
+            bool loadExcelDataToAzure = Boolean.Parse(WebConfigurationManager.AppSettings["LoadExcelDataToAzure"]);
+            List<Provider> providers;
+
+
+            if (loadExcelDataToAzure)
+            {
+                providers = LoadFromExcelData();
+
+                List<State> allProviderStates  = providers
+                                   .Select(s => new State() { StateName = s.State}).ToList();
+
+                //allProviderStates = allProviderStates.Distinct().ToList();
+
+                
+
+                var hash = new HashSet<State>(allProviderStates);
+
+
+                SaveDataToAzureTable(providers);   
+            }
+
+            bool deleteAzureTables = Boolean.Parse(WebConfigurationManager.AppSettings["DeleteAzureTables"]);
+
+            //DeleteAzureTableItems(providers);
         }
 
-        public static void  LoadAzureTables( List<Provider> providers)
+        public static void  SaveDataToAzureTable( List<Provider> providers)
         {
+            string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
+            CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
 
+            CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
+
+            CloudTable providerTable = tableClient.GetTableReference("ProviderRawData");
+
+            providerTable.CreateIfNotExists();
+
+
+            var batchCount = 1;
+            TableBatchOperation batchOperation = new TableBatchOperation(); 
+
+            Provider lastProvider = providers.Last();
+
+            foreach (Provider p in providers)
+            {
+                AzureProviderEntity newProvider = new AzureProviderEntity(p);
+                TableOperation insert = TableOperation.InsertOrReplace(newProvider);
+                batchOperation.InsertOrReplace(newProvider);
+
+                providerTable.Execute(insert);
+                //Change 100 to 10 to test small batch
+                if (batchCount == 100 || p.Equals(lastProvider))
+                {
+                    providerTable.ExecuteBatch(batchOperation);
+                    batchCount = 1;
+                    //break to  when one batch of 10 is done
+                    //break;
+                }
+                else
+                {
+                    batchCount++;
+                }
+            }
+        }
+
+        public static void DeleteAzureTableItems (List<Provider> providers)
+        {
+            string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
+            CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
+            CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
+            CloudTable providerTable = tableClient.GetTableReference("ProviderRawData");
+
+            var deleteCount = 0;
+            foreach (Provider p in providers)
+            {
+                TableOperation retrieveOperation = TableOperation.Retrieve<AzureProviderEntity>("provider", p.ProviderID.ToString());
+                TableResult retrievedResult = providerTable.Execute(retrieveOperation);
+                AzureProviderEntity deleteEntity = (AzureProviderEntity)retrievedResult.Result;
+                if (deleteEntity != null)
+                {
+                    TableOperation deleteOperation = TableOperation.Delete(deleteEntity);
+
+                    // Execute the operation.
+                    providerTable.Execute(deleteOperation);
+                    deleteCount++;
+                    Console.WriteLine("Entity deleted.");
+                }
+                //Testing code
+                //if (deleteCount == 10) break;
+            }
+            Console.WriteLine("deleted {0} entities.",deleteCount);
         }
 
 
-        public static List<Provider> LoadExcel()
+        //public static List<Provider> LoadFromAzureTableData()
+        //{
+
+        //}
+
+
+        public static List<Provider> LoadFromExcelData()
         {
             Excel.Application excel;
             Excel.Workbook workbook;
@@ -61,9 +156,11 @@ namespace Avengers.Mvc
                     {
                     var srow = item;
                     String[] rowitems = srow.ToString().Split(new char[] {';'});
-
-                    var provider = new Provider(rowitems);
-                    providers.Add(provider);
+                        if (rowitems.Length >= 9)
+                        {
+                            var provider = new Provider(rowitems);
+                            providers.Add(provider);
+                        }
                     }
                 }
             }
