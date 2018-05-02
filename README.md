@@ -1,6 +1,6 @@
 # Project Title
 
-Austin Avengers 2018
+Austin Avengers - Sogeti Hackathon 2018
 
 ## Description
 
