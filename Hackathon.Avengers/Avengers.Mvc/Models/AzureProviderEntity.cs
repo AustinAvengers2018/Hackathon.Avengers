@@ -24,13 +24,17 @@ namespace Avengers.Mvc.Models
             OpioidRate = provider.OpioidRateD;
             ExtendedOpioid = provider.ExtendedOpioid;
             ExtendedOpioidRate = provider.ExtendedOpioidRateD;
+            NationalRank = provider.NationalRank;
+            National99Percentile = provider.National99Percentile;
+            StateRank = provider.StateRank;
+            State99Percentile = provider.State99Percentile;
             PartitionKey = "provider";
-            RowKey = ProviderID.ToString();
+            RowKey = ProviderID;
         }
         public AzureProviderEntity()
         { }
 
-        public long ProviderID { get; set; }
+        public string ProviderID { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string ZipCode { get; set; }
@@ -41,5 +45,9 @@ namespace Avengers.Mvc.Models
         public decimal OpioidRate { get; set; }
         public int ExtendedOpioid { get; set; }
         public decimal ExtendedOpioidRate { get; set; }
+        public int NationalRank { get; set; }
+        public int National99Percentile { get; set; }
+        public int StateRank { get; set; }
+        public int State99Percentile { get; set; }
     }
 }

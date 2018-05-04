@@ -9,6 +9,8 @@ using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Web.Configuration;
+using System.Diagnostics;
+
 
 namespace Avengers.Mvc
 {
@@ -19,31 +21,103 @@ namespace Avengers.Mvc
         {
             bool loadExcelDataToAzure = Boolean.Parse(WebConfigurationManager.AppSettings["LoadExcelDataToAzure"]);
             List<Provider> providers;
-
+            List<Provider> flaggedProviders;
 
             if (loadExcelDataToAzure)
             {
                 providers = LoadFromExcelData();
+                CalculateNationalPercentileRank(providers);
+                CalculateStatePercentileRank(providers);
+                flaggedProviders = GetFlaggedProviders(providers);
 
-                List<State> allProviderStates  = providers
-                                   .Select(s => new State() { StateName = s.State}).ToList();
+                var flaggedCount = flaggedProviders.Count();
 
-                //allProviderStates = allProviderStates.Distinct().ToList();
-
-                
-
-                var hash = new HashSet<State>(allProviderStates);
-
-
-                SaveDataToAzureTable(providers);   
+                SaveDataToAzureTable(flaggedProviders);
+            }
+            else
+            {
+                providers = LoadFromAzureTables();
             }
 
-            bool deleteAzureTables = Boolean.Parse(WebConfigurationManager.AppSettings["DeleteAzureTables"]);
+            //Do Calculations
 
-            //DeleteAzureTableItems(providers);
+
+            bool deleteAzureTables = Boolean.Parse(WebConfigurationManager.AppSettings["DeleteAzureTables"]);
+            if (deleteAzureTables) DeleteAzureTableItems(providers);
         }
 
-        public static void  SaveDataToAzureTable( List<Provider> providers)
+        public static List<Provider> GetFlaggedProviders(List<Provider> providers)
+        {
+            var providersBySpecialty = providers.Where(d => d.NationalRank >= d.National99Percentile && d.StateRank >= d.State99Percentile && d.ProviderID != null);
+            return providersBySpecialty.ToList();
+        }
+
+        public static void CalculateNationalPercentileRank(List<Provider> providers)
+        {
+
+            foreach (var providersBySpecialty in providers.GroupBy(y => y.Specialty))
+            {
+                var providersBySpecialtySorted = providersBySpecialty.OrderBy(d => d.OpioidRateD);
+
+                int providerCount = providersBySpecialtySorted.Count();
+                decimal percent90 = 0.99m;
+                //var percentile = providerCount * percent90;
+                var percentile = Convert.ToInt32(Math.Round(providerCount * percent90, 0));
+                var i = 1;
+                foreach (Provider g in providersBySpecialtySorted)
+                {
+
+                    g.NationalRank = i;
+                    i++;
+                    g.National99Percentile = percentile;
+                }
+                //Debug.WriteLine("Specialty: {0}", s.SpecialtyName);
+            }
+        }
+
+
+
+        public static void CalculateStatePercentileRank(List<Provider> providers)
+        {
+            foreach (var providersbyState in providers.GroupBy(x => x.State))
+            {
+                foreach (var providersbyStateSpecialty in providersbyState.GroupBy(y => y.Specialty))
+                {
+                    var providersByStateSpecialtySorted = providersbyStateSpecialty.OrderBy(d => d.OpioidRateD);
+                    int providerCount = providersByStateSpecialtySorted.Count();
+                    decimal percent99 = 0.99m;
+                    var percentile = Convert.ToInt32(Math.Round(providerCount * percent99, 0));
+                    var i = 1;
+                    foreach (Provider g in providersByStateSpecialtySorted)
+                    {
+                        g.StateRank = i;
+                        i++;
+                        g.State99Percentile = percentile;
+                    }
+
+                }
+            }
+        }
+
+
+        public static List<State> GetStates(List<Provider> providers)
+        {
+            List<State> allProviderStates = providers
+                                   .Select(s => new State() { StateName = s.State }).ToList();
+            var hash = new HashSet<State>(allProviderStates);
+            return hash.ToList();
+        }
+
+        public static List<Specialty> GetSpecialties(List<Provider> providers)
+        {
+            List<Specialty> allSpecialties = providers
+                                   .Select(s => new Specialty() { SpecialtyName = s.Specialty }).ToList();
+            var hash = new HashSet<Specialty>(allSpecialties);
+            return hash.ToList();
+        }
+
+
+        public static void SaveDataToAzureTable(List<Provider> providers)
         {
             string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
             CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
@@ -56,7 +130,7 @@ namespace Avengers.Mvc
 
 
             var batchCount = 1;
-            TableBatchOperation batchOperation = new TableBatchOperation(); 
+            TableBatchOperation batchOperation = new TableBatchOperation();
 
             Provider lastProvider = providers.Last();
 
@@ -66,14 +140,16 @@ namespace Avengers.Mvc
                 TableOperation insert = TableOperation.InsertOrReplace(newProvider);
                 batchOperation.InsertOrReplace(newProvider);
 
-                providerTable.Execute(insert);
+                //providerTable.Execute(insert);
                 //Change 100 to 10 to test small batch
-                if (batchCount == 100 || p.Equals(lastProvider))
+                if (batchCount >= 99 || p.Equals(lastProvider))
                 {
-                    providerTable.ExecuteBatch(batchOperation);
                     batchCount = 1;
-                    //break to  when one batch of 10 is done
+                    providerTable.ExecuteBatch(batchOperation);
+                    batchOperation.Clear();
+                    //break foreach  when one batch of 10 is done
                     //break;
+                    Debug.WriteLine("Batch stored to azure: {0}", batchCount);
                 }
                 else
                 {
@@ -82,7 +158,7 @@ namespace Avengers.Mvc
             }
         }
 
-        public static void DeleteAzureTableItems (List<Provider> providers)
+        public static void DeleteAzureTableItems(List<Provider> providers)
         {
             string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
             CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
@@ -107,14 +183,28 @@ namespace Avengers.Mvc
                 //Testing code
                 //if (deleteCount == 10) break;
             }
-            Console.WriteLine("deleted {0} entities.",deleteCount);
+            Console.WriteLine("deleted {0} entities.", deleteCount);
         }
 
 
-        //public static List<Provider> LoadFromAzureTableData()
-        //{
+        public static List<Provider> LoadFromAzureTables()
+        {
+            var providers = new List<Provider>();
+            string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
+            CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
+            CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
+            CloudTable providerTable = tableClient.GetTableReference("ProviderRawData");
 
-        //}
+            // Construct the query operation for all provider entities where PartitionKey="provider".
+            TableQuery<AzureProviderEntity> query = new TableQuery<AzureProviderEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "provider"));
+
+            foreach (AzureProviderEntity entity in providerTable.ExecuteQuery(query))
+            {
+                var provider = new Provider(entity);
+                providers.Add(provider);
+            }
+            return providers;
+        }
 
 
         public static List<Provider> LoadFromExcelData()
@@ -154,9 +244,9 @@ namespace Avengers.Mvc
                 {
                     if (item != null)
                     {
-                    var srow = item;
-                    String[] rowitems = srow.ToString().Split(new char[] {';'});
-                        if (rowitems.Length >= 9)
+                        var srow = item;
+                        String[] rowitems = srow.ToString().Split(new char[] { ';' });
+                        if (rowitems.Length >= 9 && !string.IsNullOrWhiteSpace(rowitems[3])  && !string.IsNullOrWhiteSpace(rowitems[4])  && !string.IsNullOrWhiteSpace(rowitems[0]))
                         {
                             var provider = new Provider(rowitems);
                             providers.Add(provider);
@@ -174,8 +264,9 @@ namespace Avengers.Mvc
             excel.Quit();
             Marshal.ReleaseComObject(excel);
 
-            return providers;
-
+            //Insure list is unique by ProviderID
+            var hash = new HashSet<Provider>(providers);
+            return hash.ToList();
         }
     }
 }
