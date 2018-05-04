@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Auditor Dashboard/Inbox";
+}
+
+
+
+<div>
+    <h2>@ViewBag.Title</h2>
+
+    <br/>
+    <!--<p><button class="btn btn-lg btn-default" type="submit">@Html.ActionLink("Prepare/Send Report", "Report", "Home")</button></p>-->
+
+
+    <div id="content"></div>
+    <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <p class="navbar-text navbar-right">
+            <a href="https://asp.net" class="btn btn-primary btn-lg">Prepare & Send Report &raquo;</a>
+        </p>
+    </div>
+
+    @section Scripts{
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js"></script>
+        <script src="@Url.Content("~/Scripts/HelloWorld.jsx")"></script>
+    }
+</div> 
