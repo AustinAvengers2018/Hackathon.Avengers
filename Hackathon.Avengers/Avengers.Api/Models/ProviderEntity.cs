@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace Avengers.Api.Models
 {
-    public class Provider
+    public class ProviderEntity: TableEntity
     {
-        public int NPI { get; set; }
+        public int ProviderID { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string Specialty { get; set; }

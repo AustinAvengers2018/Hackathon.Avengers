@@ -11,24 +11,24 @@ namespace Avengers.Api.Controllers
     public class PrescriptionController : ApiController
     {
         // GET: api/Prescription
-        public IEnumerable<Prescription> Get()
+        public IEnumerable<PrescriptionEntity> Get()
         {
-            return new Prescription[] {  };
+            return new PrescriptionEntity[] {  };
         }
 
         // GET: api/Prescription/5
-        public Prescription Get(int rxNumber)
+        public PrescriptionEntity Get(int rxNumber)
         {
-            return new Prescription();
+            return new PrescriptionEntity();
         }
 
         // POST: api/Prescription
-        public void Post([FromBody]Prescription rx)
+        public void Post([FromBody]PrescriptionEntity rx)
         {
         }
 
         // PUT: api/Prescription/5
-        public void Put(int rxNumber, [FromBody]Prescription rx)
+        public void Put(int rxNumber, [FromBody]PrescriptionEntity rx)
         {
         }
 

@@ -1,4 +1,5 @@
-﻿using Avengers.Api.Models;
+﻿using Avengers.Api.DataAccess;
+using Avengers.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,31 +11,41 @@ namespace Avengers.Api.Controllers
 {
     public class ProviderController : ApiController
     {
-        // GET: api/Provider
-        public IEnumerable<Provider> Get()
+        readonly FraudStorageRepository _repo;
+
+        public ProviderController(IAvengersCloudAccess cloud)
         {
-            return new Provider[] { };
+            _repo = new FraudStorageRepository(cloud);
+        }
+
+        // GET: api/Provider
+        public IEnumerable<ProviderEntity> Get()
+        {
+            return _repo.Providers.Get();
         }
 
         // GET: api/Provider/5
-        public Provider Get(int npi)
+        public ProviderEntity Get(int npi)
         {
-            return new Provider();
+            return _repo.Providers.Find(npi);
         }
 
         // POST: api/Provider
-        public void Post([FromBody]Provider value)
+        public void Post([FromBody]ProviderEntity value)
         {
+            _repo.Providers.Create(value);
         }
 
         // PUT: api/Provider/5
-        public void Put(int npi, [FromBody]Provider value)
+        public void Put(int npi, [FromBody]ProviderEntity value)
         {
+            _repo.Providers.Update(npi, value);
         }
 
         // DELETE: api/Provider/5
         public void Delete(int npi)
         {
+            _repo.Providers.Delete(npi);
         }
     }
 }

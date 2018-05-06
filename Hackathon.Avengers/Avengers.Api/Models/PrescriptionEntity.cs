@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Avengers.Api.Models
 {
-    public class Prescription
+    public class PrescriptionEntity
     {
         public int RxNumber { get; set; }
         public DateTime RxFillDate { get; set; }
