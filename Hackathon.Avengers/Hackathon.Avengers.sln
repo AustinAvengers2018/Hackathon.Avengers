@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avengers.Mvc", "Avengers.Mvc\Avengers.Mvc.csproj", "{F7FC17D7-02F3-41D5-9698-CC3AAFABE7E5}"
 EndProject
@@ -36,23 +36,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://austinavengers.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Avengers.Api.Tests\\Avengers.Api.Tests.csproj
-		SccProjectName1 = Avengers.Api.Tests
-		SccLocalPath1 = Avengers.Api.Tests
-		SccProjectUniqueName2 = Avengers.Api\\Avengers.Api.csproj
-		SccProjectName2 = Avengers.Api
-		SccLocalPath2 = Avengers.Api
-		SccProjectUniqueName3 = Avengers.Mvc.Tests\\Avengers.Mvc.Tests.csproj
-		SccProjectName3 = Avengers.Mvc.Tests
-		SccLocalPath3 = Avengers.Mvc.Tests
-		SccProjectUniqueName4 = Avengers.Mvc\\Avengers.Mvc.csproj
-		SccProjectName4 = Avengers.Mvc
-		SccLocalPath4 = Avengers.Mvc
 	EndGlobalSection
 EndGlobal
