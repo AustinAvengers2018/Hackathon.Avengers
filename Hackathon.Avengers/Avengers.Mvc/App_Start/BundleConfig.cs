@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Optimization;
+using System.Web.Optimization.React;
 
 namespace Avengers.Mvc
 {
@@ -26,6 +27,15 @@ namespace Avengers.Mvc
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new BabelBundle("~/bundles/react").Include(
+                // Add your JSX files here
+                "~/app/index.jsx",
+                "~/app/App.jsx",
+                "~/app/Components/AuditorResponseForm.jsx",
+                "~/app/Components/CaseDetails.jsx",
+                "~/app/Components/Header.jsx"
+                ));
         }
     }
 }

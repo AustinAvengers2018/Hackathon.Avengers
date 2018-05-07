@@ -1,0 +1,15 @@
+{
+  "name": "react-bootstrap-master",
+  "homepage": "https://github.com/react-bootstrap/react-bootstrap",
+  "version": "0.32.1",
+  "_release": "0.32.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.32.1",
+    "commit": "f3cf431461f4d0baac6e0ab4daabb1d4c5f0bd42"
+  },
+  "_source": "https://github.com/react-bootstrap/react-bootstrap.git",
+  "_target": "v0.32.1",
+  "_originalSource": "react-bootstrap-master",
+  "_direct": true
+}
