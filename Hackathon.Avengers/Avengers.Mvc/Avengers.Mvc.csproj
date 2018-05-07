@@ -157,7 +157,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="ModelInit.cs" />
+    <Compile Include="Models\AzurePatientEntity.cs" />
+    <Compile Include="Models\AzurePrescriptionEntity.cs" />
     <Compile Include="Models\AzureProviderEntity.cs" />
+    <Compile Include="Models\Patient.cs" />
+    <Compile Include="Models\Prescription.cs" />
     <Compile Include="Models\Provider.cs" />
     <Compile Include="Models\Specialty.cs" />
     <Compile Include="Models\State.cs" />

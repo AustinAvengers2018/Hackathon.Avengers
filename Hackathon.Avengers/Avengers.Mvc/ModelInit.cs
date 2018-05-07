@@ -20,29 +20,38 @@ namespace Avengers.Mvc
         public static void LoadData()
         {
             bool loadExcelDataToAzure = Boolean.Parse(WebConfigurationManager.AppSettings["LoadExcelDataToAzure"]);
+            bool deleteAzureTables = Boolean.Parse(WebConfigurationManager.AppSettings["DeleteAzureTables"]);
+
             List<Provider> providers;
             List<Provider> flaggedProviders;
+            List<Prescription> prescriptions;
+            List<Patient> flaggedPatients;
+
 
             if (loadExcelDataToAzure)
             {
-                providers = LoadFromExcelData();
+                providers = LoadProvidersFromExcelData();
                 CalculateNationalPercentileRank(providers);
                 CalculateStatePercentileRank(providers);
                 flaggedProviders = GetFlaggedProviders(providers);
 
+                prescriptions = LoadPrescriptionsFromExcelData();
+                flaggedPatients = CalculatePrescriptionFraud(prescriptions);
+
+
                 var flaggedCount = flaggedProviders.Count();
 
-                SaveDataToAzureTable(flaggedProviders);
+                SaveProvidersToAzureTable(flaggedProviders);
+                SavePatientsToAzureTable(flaggedPatients);
+
             }
             else
             {
-                providers = LoadFromAzureTables();
+                flaggedProviders = LoadProvidersFromAzureTables();
+                flaggedPatients = LoadPatientsFromAzureTables();
             }
 
-            //Do Calculations
 
-
-            bool deleteAzureTables = Boolean.Parse(WebConfigurationManager.AppSettings["DeleteAzureTables"]);
             if (deleteAzureTables) DeleteAzureTableItems(providers);
         }
 
@@ -75,7 +84,47 @@ namespace Avengers.Mvc
             }
         }
 
-
+        public static List<Patient> CalculatePrescriptionFraud(List<Prescription> prescriptions)
+        {
+            List<Patient> badPatients = new List<Patient>();
+            foreach (var prescriptionPerPatient in prescriptions.GroupBy(x => x.Ssn))
+            {
+                var prescriptionPerPationetSorted = prescriptionPerPatient.OrderBy(d => d.PrescriptionDate);
+                Patient potentialBadPatient = new Patient();
+                potentialBadPatient.PrescriptionCount = prescriptionPerPationetSorted.Count();
+                int innerCount = 1;
+                DateTime FirstDayof30 = new DateTime();
+                foreach (Prescription p in prescriptionPerPationetSorted)
+                {
+                    if (FirstDayof30 == null)
+                    {
+                        FirstDayof30 = p.PrescriptionDate;
+                    }
+                    else if ((p.PrescriptionDate - FirstDayof30).TotalDays >= 29)
+                    {
+                        FirstDayof30 = p.PrescriptionDate;
+                    }
+                    else
+                    {
+                        innerCount++;
+                        if (innerCount == 4)
+                        {
+                            innerCount = 1;
+                        }
+                        potentialBadPatient.MultipleDetectionCount++;
+                        potentialBadPatient.FirstName = p.FirstName;
+                        potentialBadPatient.LastName = p.LastName;
+                        potentialBadPatient.Ssn = p.Ssn;
+                        potentialBadPatient.State = p.State;
+                    }
+                }
+                if (potentialBadPatient.MultipleDetectionCount > 0)
+                {
+                    badPatients.Add(potentialBadPatient);
+                }
+            }
+            return badPatients;
+        }
 
         public static void CalculateStatePercentileRank(List<Provider> providers)
         {
@@ -117,14 +166,14 @@ namespace Avengers.Mvc
         }
 
 
-        public static void SaveDataToAzureTable(List<Provider> providers)
+        public static void SaveProvidersToAzureTable(List<Provider> providers)
         {
             string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
             CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
 
             CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
 
-            CloudTable providerTable = tableClient.GetTableReference("ProviderRawData");
+            CloudTable providerTable = tableClient.GetTableReference("FlaggedProviders");
 
             providerTable.CreateIfNotExists();
 
@@ -149,6 +198,43 @@ namespace Avengers.Mvc
                     batchOperation.Clear();
                     //break foreach  when one batch of 10 is done
                     //break;
+                    Debug.WriteLine("Batch stored to azure: {0}", batchCount);
+                }
+                else
+                {
+                    batchCount++;
+                }
+            }
+        }
+
+        public static void SavePatientsToAzureTable(List<Patient> patients)
+        {
+            string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
+            CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
+
+            CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
+
+            CloudTable patientTable = tableClient.GetTableReference("FlaggedPatients");
+
+            patientTable.CreateIfNotExists();
+
+
+            var batchCount = 1;
+            TableBatchOperation batchOperation = new TableBatchOperation();
+
+            Patient lastPatient = patients.Last();
+
+            foreach (Patient p in patients)
+            {
+                AzurePatientEntity newPatient = new AzurePatientEntity(p);
+                TableOperation insert = TableOperation.InsertOrReplace(newPatient);
+                batchOperation.InsertOrReplace(newPatient);
+
+                if (batchCount >= 99 || p.Equals(lastPatient))
+                {
+                    batchCount = 1;
+                    patientTable.ExecuteBatch(batchOperation);
+                    batchOperation.Clear();
                     Debug.WriteLine("Batch stored to azure: {0}", batchCount);
                 }
                 else
@@ -187,13 +273,13 @@ namespace Avengers.Mvc
         }
 
 
-        public static List<Provider> LoadFromAzureTables()
+        public static List<Provider> LoadProvidersFromAzureTables()
         {
             var providers = new List<Provider>();
             string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
             CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
             CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
-            CloudTable providerTable = tableClient.GetTableReference("ProviderRawData");
+            CloudTable providerTable = tableClient.GetTableReference("FlaggedProviders");
 
             // Construct the query operation for all provider entities where PartitionKey="provider".
             TableQuery<AzureProviderEntity> query = new TableQuery<AzureProviderEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "provider"));
@@ -205,9 +291,27 @@ namespace Avengers.Mvc
             }
             return providers;
         }
+        public static List<Patient> LoadPatientsFromAzureTables()
+        {
+            var patients = new List<Patient>();
+            string storageConnection = System.Configuration.ConfigurationManager.AppSettings.Get("AzureFraudStorageConnectionString");
+            CloudStorageAccount storageAcount = CloudStorageAccount.Parse(storageConnection);
+            CloudTableClient tableClient = storageAcount.CreateCloudTableClient();
+            CloudTable patientTable = tableClient.GetTableReference("FlaggedPatients");
+
+            // Construct the query operation for all provider entities where PartitionKey="provider".
+            TableQuery<AzurePatientEntity> query = new TableQuery<AzurePatientEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "patient"));
+
+            foreach (AzurePatientEntity entity in patientTable.ExecuteQuery(query))
+            {
+                var patient = new Patient(entity);
+                patients.Add(patient);
+            }
+            return patients;
+        }
 
 
-        public static List<Provider> LoadFromExcelData()
+        public static List<Provider> LoadProvidersFromExcelData()
         {
             Excel.Application excel;
             Excel.Workbook workbook;
@@ -266,6 +370,58 @@ namespace Avengers.Mvc
 
             //Insure list is unique by ProviderID
             var hash = new HashSet<Provider>(providers);
+            return hash.ToList();
+        }
+
+
+        public static List<Prescription> LoadPrescriptionsFromExcelData()
+        {
+            Excel.Application excel;
+            Excel.Workbook workbook;
+            Excel.Worksheet worksheet;
+
+
+            string path = HostingEnvironment.ApplicationPhysicalPath;
+            string dataPath = path + "\\Data\\opioid_prescription_data.xlsx";
+
+            excel = new Excel.Application();
+            workbook = excel.Workbooks.Open(dataPath);
+            worksheet = excel.ActiveSheet;
+            Excel.Range xlRange = worksheet.UsedRange;
+            var prescriptions = new List<Prescription>();
+            int rowcount = xlRange.Rows.Count;
+            int colcount = xlRange.Columns.Count;
+
+            for (int i = 2; i <= rowcount; i++)
+            {
+                String[] pres = new String[9];
+                for (int j = 1; j <= colcount; j++)
+                {
+                    if (j == 9)
+                    {
+                        pres[j - 1] = xlRange.Cells[i, j].Value.ToString();
+                    }
+                    else
+                    {
+                        pres[j - 1] = xlRange.Cells[i, j].Value2.ToString();
+                    }
+                
+                }
+                var prescription = new Prescription(pres);
+                prescriptions.Add(prescription);
+            }
+
+            //cleanup
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            Marshal.ReleaseComObject(worksheet);
+            workbook.Close();
+            Marshal.ReleaseComObject(workbook);
+            excel.Quit();
+            Marshal.ReleaseComObject(excel);
+
+            //Insure list is unique by Prescription
+            var hash = new HashSet<Prescription>(prescriptions);
             return hash.ToList();
         }
     }
