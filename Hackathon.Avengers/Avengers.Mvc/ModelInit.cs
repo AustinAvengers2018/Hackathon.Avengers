@@ -22,7 +22,7 @@ namespace Avengers.Mvc
             bool loadExcelDataToAzure = Boolean.Parse(WebConfigurationManager.AppSettings["LoadExcelDataToAzure"]);
             bool deleteAzureTables = Boolean.Parse(WebConfigurationManager.AppSettings["DeleteAzureTables"]);
 
-            List<Provider> providers;
+            List<Provider> providers = null;
             List<Provider> flaggedProviders;
             List<Prescription> prescriptions;
             List<Patient> flaggedPatients;
@@ -110,12 +110,12 @@ namespace Avengers.Mvc
                         if (innerCount == 4)
                         {
                             innerCount = 1;
-                        }
-                        potentialBadPatient.MultipleDetectionCount++;
-                        potentialBadPatient.FirstName = p.FirstName;
-                        potentialBadPatient.LastName = p.LastName;
-                        potentialBadPatient.Ssn = p.Ssn;
-                        potentialBadPatient.State = p.State;
+                            potentialBadPatient.MultipleDetectionCount++;
+                            potentialBadPatient.FirstName = p.FirstName;
+                            potentialBadPatient.LastName = p.LastName;
+                            potentialBadPatient.Ssn = p.Ssn;
+                            potentialBadPatient.State = p.State;
+                        }    
                     }
                 }
                 if (potentialBadPatient.MultipleDetectionCount > 0)

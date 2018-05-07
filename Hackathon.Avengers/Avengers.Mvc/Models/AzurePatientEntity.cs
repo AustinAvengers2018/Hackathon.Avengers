@@ -23,7 +23,6 @@ namespace Avengers.Mvc.Models
         public string FirstName { get; set; }
         public string State { get; set; }
         public int PrescriptionCount { get; set; }
-        public int DaysSupply { get; set; }
         public int MultipleDetectionCount { get; set; }
     }
 }
