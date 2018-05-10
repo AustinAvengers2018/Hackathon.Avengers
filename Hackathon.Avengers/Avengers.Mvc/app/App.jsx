@@ -7,7 +7,7 @@
 //import CaseDetails from './Components/CaseDetails';
 
 const CASES = [
-  { name: "Dirty Doc", pct: "84" },
+  { name: "Dirty Doc", pct: "84", zip: "12345", rx_num: "123", npi: "3", drug: "Opioid", supply: "", days_supply: "30", rx_fill_date: "05/15/2018" },
   { name: "Opioid Addict", pct: "95" },
   { name: "Innocent Guy", pct: "20" },
   { name: "Dirty Doc 2", pct: "60" },
