@@ -26,7 +26,7 @@ namespace Avengers.Mvc
             List<Provider> flaggedProviders;
             List<Prescription> prescriptions;
             List<Patient> flaggedPatients;
-
+            
 
             if (loadExcelDataToAzure)
             {
