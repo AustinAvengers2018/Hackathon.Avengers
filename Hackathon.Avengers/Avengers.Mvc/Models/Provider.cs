@@ -25,6 +25,7 @@ namespace Avengers.Mvc.Models
         public int National99Percentile { get; set; }
         public int StateRank { get; set; }
         public int State99Percentile { get; set; }
+        public bool Reviewed { get; set; }
 
         public Provider(AzureProviderEntity entity)
         {
@@ -43,6 +44,7 @@ namespace Avengers.Mvc.Models
             National99Percentile = entity.National99Percentile;
             StateRank = entity.StateRank;
             State99Percentile = entity.State99Percentile;
+            Reviewed = entity.Reviewed;
         }
 
         public Provider(String[] items)
@@ -76,6 +78,7 @@ namespace Avengers.Mvc.Models
                     ExtendedOpioidRateS = items[10];
                     ExtendedOpioidRateD = decimal.Parse(ExtendedOpioidRateS.TrimEnd(new char[] { '%', ' ' }));
                 }
+                Reviewed = false;
             }
         }
 

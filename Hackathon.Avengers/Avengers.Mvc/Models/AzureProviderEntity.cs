@@ -4,7 +4,23 @@ namespace Avengers.Mvc.Models
 {
     public class AzureProviderEntity : TableEntity
     {
-        public AzureProviderEntity ( Provider provider)
+        public string ProviderID { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string ZipCode { get; set; }
+        public string State { get; set; }
+        public string Specialty { get; set; }
+        public int Total { get; set; }
+        public int Opioid { get; set; }
+        public decimal OpioidRate { get; set; }
+        public int ExtendedOpioid { get; set; }
+        public decimal ExtendedOpioidRate { get; set; }
+        public int NationalRank { get; set; }
+        public int National99Percentile { get; set; }
+        public int StateRank { get; set; }
+        public int State99Percentile { get; set; }
+        public bool Reviewed { get; set; }
+        public AzureProviderEntity(Provider provider)
         {
             ProviderID = provider.ProviderID;
             LastName = provider.LastName;
@@ -21,26 +37,11 @@ namespace Avengers.Mvc.Models
             National99Percentile = provider.National99Percentile;
             StateRank = provider.StateRank;
             State99Percentile = provider.State99Percentile;
+            Reviewed = provider.Reviewed;
             PartitionKey = "provider";
             RowKey = ProviderID;
         }
         public AzureProviderEntity()
         { }
-
-        public string ProviderID { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string ZipCode { get; set; }
-        public string State { get; set; }
-        public string Specialty { get; set; }
-        public int Total { get; set; }
-        public int Opioid { get; set; }
-        public decimal OpioidRate { get; set; }
-        public int ExtendedOpioid { get; set; }
-        public decimal ExtendedOpioidRate { get; set; }
-        public int NationalRank { get; set; }
-        public int National99Percentile { get; set; }
-        public int StateRank { get; set; }
-        public int State99Percentile { get; set; }
     }
 }

@@ -115,6 +115,7 @@ namespace Avengers.Mvc
                             potentialBadPatient.LastName = p.LastName;
                             potentialBadPatient.Ssn = p.Ssn;
                             potentialBadPatient.State = p.State;
+                            potentialBadPatient.Reviewed = false;
                         }    
                     }
                 }
