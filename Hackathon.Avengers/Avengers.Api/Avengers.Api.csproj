@@ -241,11 +241,12 @@
     <Compile Include="DataAccess\IAvengersCloudAccess.cs" />
     <Compile Include="DataAccess\IGateway.cs" />
     <Compile Include="DataAccess\NullGateway.cs" />
+    <Compile Include="DataAccess\PatientGateway.cs" />
     <Compile Include="DataAccess\ProvidersGateway.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\PrescriptionEntity.cs" />
+    <Compile Include="Models\PatientEntity.cs" />
     <Compile Include="Models\ProviderEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

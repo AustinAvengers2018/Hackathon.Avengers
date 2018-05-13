@@ -9,10 +9,6 @@ namespace Avengers.Api.Tests
 {
     class AvengersCloudAccessTests
     {
-        public AvengersCloudAccessTests()
-        {
-
-        }
 
     }
 }

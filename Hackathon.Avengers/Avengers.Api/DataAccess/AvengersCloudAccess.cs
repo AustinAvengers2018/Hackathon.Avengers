@@ -36,6 +36,8 @@ namespace Avengers.Api.DataAccess
             {
                 case "ProviderEntity":
                     return new ProvidersGateway(this) as IGateway<T>;
+                case "PrescriptionEntity":
+                    return new PatientGateway(this) as IGateway<T>;
                 default:
                     return new NullGateway() as IGateway<T>;
             }
@@ -44,12 +46,21 @@ namespace Avengers.Api.DataAccess
         public CloudTable GetTableFor<T>()
         {
             var typeName = typeof(T).Name;
-            switch (typeName)
+            try
             {
-                case "ProviderEntity":
-                    return _tableClient.GetTableReference("ProviderRawData");
-                default:
-                    return new CloudTable(new Uri("http://null.org"));
+                switch (typeName)
+                {
+                    case "ProviderEntity":
+                        return _tableClient.GetTableReference("FlaggedProviders");
+                    case "PerscriptionEntity":
+                        return _tableClient.GetTableReference("FlaggedPatients");
+                    default:
+                        return new CloudTable(new Uri("http://null.org"));
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Could not establish table reference for: {typeName}");
             }
         }
 

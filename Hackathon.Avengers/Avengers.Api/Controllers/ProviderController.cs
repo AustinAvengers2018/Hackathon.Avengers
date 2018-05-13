@@ -25,9 +25,9 @@ namespace Avengers.Api.Controllers
         }
 
         // GET: api/Provider/5
-        public ProviderEntity Get(int npi)
+        public ProviderEntity Get(long npi)
         {
-            return _repo.Providers.Find(npi);
+            return _repo.Providers.Find(npi.ToString());
         }
 
         // POST: api/Provider
@@ -37,15 +37,15 @@ namespace Avengers.Api.Controllers
         }
 
         // PUT: api/Provider/5
-        public void Put(int npi, [FromBody]ProviderEntity value)
+        public void Put(long npi, [FromBody]ProviderEntity value)
         {
-            _repo.Providers.Update(npi, value);
+            _repo.Providers.Update(npi.ToString(), value);
         }
 
         // DELETE: api/Provider/5
-        public void Delete(int npi)
+        public void Delete(long npi)
         {
-            _repo.Providers.Delete(npi);
+            _repo.Providers.Delete(npi.ToString());
         }
     }
 }
