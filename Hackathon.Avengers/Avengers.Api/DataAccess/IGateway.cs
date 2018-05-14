@@ -5,9 +5,9 @@ namespace Avengers.Api.DataAccess
     public interface IGateway<T>
     {
         IEnumerable<T> Get();
-        T Find(int id);
+        T Find(string id);
         void Create(T newobject);
-        void Update(int id, T updated);
-        void Delete(int id);
+        void Update(string id, T updated);
+        void Delete(string id);
     }
 }

@@ -15,11 +15,11 @@ namespace Avengers.Api.DataAccess
         public FraudStorageRepository(IAvengersCloudAccess cloud)
         {
             Providers = cloud.GetGatewayFor<ProviderEntity>();
-            Prescriptions = cloud.GetGatewayFor<PrescriptionEntity>();
+            Patients = cloud.GetGatewayFor<PatientEntity>();
         }
 
         public IGateway<ProviderEntity> Providers { get; private set; }
-        public IGateway<PrescriptionEntity> Prescriptions { get; set; }
+        public IGateway<PatientEntity> Patients { get; set; }
 
     }
 }

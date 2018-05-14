@@ -20,17 +20,22 @@ namespace Avengers.Api.DataAccess
 
         public void Create(ProviderEntity newobject)
         {
-            throw new NotImplementedException();
+            var insert = TableOperation.Insert(newobject);
+            Providers.Execute(insert);
         }
 
-        public void Delete(int id)
+        public void Delete(string id)
         {
-            throw new NotImplementedException();
+            var toBeDeleted = Providers.CreateQuery<ProviderEntity>()
+                .FirstOrDefault(p => p.RowKey == id);
+            var delete = TableOperation.Delete(toBeDeleted);
+            Providers.Execute(delete);
         }
 
-        public ProviderEntity Find(int id)
+        public ProviderEntity Find(string id)
         {
-            throw new NotImplementedException();
+            return Providers.CreateQuery<ProviderEntity>()
+                .SingleOrDefault(p => p.PartitionKey == _partitionKey && p.RowKey == id);
         }
 
         public IEnumerable<ProviderEntity> Get()
@@ -45,14 +50,13 @@ namespace Avengers.Api.DataAccess
                 .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, _partitionKey));
         }
 
-        public void Update(int id, ProviderEntity tObject)
+        public void Update(string id, ProviderEntity provider)
         {
-            throw new NotImplementedException();
+            if (!Providers.CreateQuery<ProviderEntity>().Any(p => p.RowKey == id))
+                return;
+            var merge = TableOperation.Merge(provider);
+            Providers.Execute(merge);
         }
 
-        ProviderEntity IGateway<ProviderEntity>.Find(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

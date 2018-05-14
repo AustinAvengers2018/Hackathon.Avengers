@@ -13,11 +13,11 @@ namespace Avengers.Api.DataAccess
         {
         }
 
-        public void Delete(int id)
+        public void Delete(string id)
         {
         }
 
-        public object Find(int id)
+        public object Find(string id)
         {
             return null;
         }
@@ -27,7 +27,7 @@ namespace Avengers.Api.DataAccess
             return new List<object>();
         }
 
-        public void Update(int id, object updated)
+        public void Update(string id, object updated)
         {
         }
     }

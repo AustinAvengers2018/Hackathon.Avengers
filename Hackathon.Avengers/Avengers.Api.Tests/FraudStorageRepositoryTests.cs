@@ -21,23 +21,23 @@ namespace Avengers.Api.Tests
             var fakeProviderGateway = new Mock<IGateway<ProviderEntity>>();
             fakeAccess.Setup(x => x.GetGatewayFor<ProviderEntity>())
                 .Returns(fakeProviderGateway.Object);
-            var fakePrescriptionGateway = new Mock<IGateway<PrescriptionEntity>>();
-            fakeAccess.Setup(x => x.GetGatewayFor<PrescriptionEntity>())
+            var fakePrescriptionGateway = new Mock<IGateway<PatientEntity>>();
+            fakeAccess.Setup(x => x.GetGatewayFor<PatientEntity>())
                 .Returns(fakePrescriptionGateway.Object);
             var repo = new FraudStorageRepository(fakeAccess.Object);
             Assert.IsNotNull(repo.Providers);
-            Assert.IsNotNull(repo.Prescriptions);
+            Assert.IsNotNull(repo.Patients);
         }
 
         [Test]
         public void Providers_WhenUnderlyingTableHasRows_ShouldContainRows()
         {
             var fakeAccess = new Mock<IAvengersCloudAccess>();
-            var fakeProviderGateway = new Mock<IGateway<PrescriptionEntity>>();
-            fakeAccess.Setup(x => x.GetGatewayFor<PrescriptionEntity>())
+            var fakeProviderGateway = new Mock<IGateway<PatientEntity>>();
+            fakeAccess.Setup(x => x.GetGatewayFor<PatientEntity>())
                 .Returns(fakeProviderGateway.Object);
             var repo = new FraudStorageRepository(fakeAccess.Object);
-            Assert.IsNotNull(repo.Prescriptions);
+            Assert.IsNotNull(repo.Patients);
         }
 
     }
