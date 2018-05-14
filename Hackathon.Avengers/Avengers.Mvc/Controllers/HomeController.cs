@@ -40,26 +40,5 @@ namespace Avengers.Mvc.Controllers
 
             return View();
         }
-
-        public ActionResult Dashboard()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        public ActionResult Report()
-        {
-            ViewBag.Message = "Your report page.";
-
-            return View();
-        }
-
-        public ActionResult ActivityDetail()
-        {
-            ViewBag.Message = "Your activity detail page.";
-
-            return View();
-        }
     }
 }

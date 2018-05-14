@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Auditor Dashboard/Inbox";
+}
+
+<script>
+    var activeCase = 0;
+
+    const CASES = [
+        { name: "Dirty Doc", pct: "84", zip: "12345", rx_num: "123", npi: "3", drug: "Opioid", supply: "", days_supply: "30", rx_fill_date: "05/15/2018" },
+        { name: "Opioid Addict", pct: "95" },
+        { name: "Innocent Guy", pct: "20" },
+        { name: "Dirty Doc 2", pct: "60" },
+        { name: "Dirty Doc", pct: "84" },
+        { name: "Opioid Addict", pct: "95" },
+        { name: "Innocent Guy", pct: "20" },
+        { name: "Dirty Doc 2", pct: "60" }
+    ];
+
+
+    function caseList() {
+        var out = '<div class="list-group" id="list-tab" role="tablist">';
+        for (var i = 0; i < CASES.length; i++) {
+            out += '<a class="list-group-item list-group-item-action'
+            if (i == 0) {
+                out += ' active';
+            }
+            out += '" id="list- home - list" data-toggle="list" role="tab" onClick="setActiveCase(' + i + ', this)" href="javascript: reloadDetails()">' + CASES[i].name + '</a>';
+        }
+        out += '</dic>';
+        document.getElementById('caseList').innerHTML = out;
+    }
+
+    function setActiveCase(index, element) {
+        var current = document.getElementsByClassName("active");
+        current[0].className = current[0].className.replace(" active", "");
+        activeCase = index;
+        element.className += " active";
+    }
+
+    function getActiveCaseHeader() {
+        document.getElementById('activeCaseHeader').innerHTML =
+            CASES[activeCase].pct + "% confident that " + CASES[activeCase].name + " is committing fraud";
+    }
+
+    function reloadDetails() {
+        var container = document.getElementById("nav-tabContent");
+        var content = container.innerHTML;
+        container.innerHTML = content;
+
+        getActiveCaseHeader();
+
+        //this line is to watch the result in console , you can remove it later	
+        console.log("Refreshed; active case i = " + activeCase + "; " + content);
+    }
+
+
+    $('.list-group').click(function () {
+        $(this).addClass('active').siblings().removeClass('active');
+    });
+</script>
+
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            Opioid Dashboard - Auditor View
+        </div>
+        <p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">Auditor Jane Doe</a> | @Html.ActionLink("Log Out", "Index", "Home")</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 col-sm-4">
+        <div id="caseList">
+            <script>caseList();</script>
+        </div>
+        <div class="navbar">
+            <p class="navbar-text">
+                @Html.ActionLink("Prepare & Send Report >>", "Report", "Auditor")
+            </p>
+        </div>
+    </div>
+    <div class="col-md-8 col-sm-8">
+        <div class="tab-content" id="nav-tabContent">
+
+            <br />
+
+            <div class="container">
+                <h1 id="activeCaseHeader">
+                    <script>getActiveCaseHeader();</script>
+                </h1>
+                <h3>Fraud committed by prescriber/provider</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>Name: Last, First</p>
+                        <p>SSN: {this.props.ssn}</p>
+                        <p>Zip Code: {this.props.zip}</p>
+                        <p>NPI: {this.props.npi}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>Drug: druge_name here</p>
+                        <p>Rx Number: {this.props.rx_num}</p>
+                        <p>Days Supply: num here</p>
+                        <p>Rx Refill Date: xx/xx/xxxx</p>
+                    </div>
+                </div>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Comments</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Conclusion</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" />
+                        <label class="custom-control-label" for="customRadio1">Further Investigation Required.</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" />
+                        <label class="custom-control-label" for="customRadio2">No Fraud.</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Mark case as reviewed</button>
+            </form>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/bootstrap")
+</div>

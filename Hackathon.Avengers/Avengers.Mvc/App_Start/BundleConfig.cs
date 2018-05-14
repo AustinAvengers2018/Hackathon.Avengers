@@ -22,20 +22,12 @@ namespace Avengers.Mvc
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/respond.js",
+                      "~/Scripts/caseDetails.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
-
-            bundles.Add(new BabelBundle("~/bundles/react").Include(
-                // Add your JSX files here
-                "~/app/index.jsx",
-                "~/app/App.jsx",
-                "~/app/Components/AuditorResponseForm.jsx",
-                "~/app/Components/CaseDetails.jsx",
-                "~/app/Components/Header.jsx"
-                ));
         }
     }
 }
