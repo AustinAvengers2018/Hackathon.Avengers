@@ -36,7 +36,7 @@ namespace Avengers.Api.DataAccess
             {
                 case "ProviderEntity":
                     return new ProvidersGateway(this) as IGateway<T>;
-                case "PrescriptionEntity":
+                case "PatientEntity":
                     return new PatientGateway(this) as IGateway<T>;
                 default:
                     return new NullGateway() as IGateway<T>;

@@ -41,7 +41,7 @@ namespace Avengers.Api.DataAccess
         public IEnumerable<ProviderEntity> Get()
         {
             var query = GetAllQuery();
-            return Providers.ExecuteQuery(query);
+            return Providers.ExecuteQuery(query).Take(20);
         }
 
         private TableQuery<ProviderEntity> GetAllQuery()

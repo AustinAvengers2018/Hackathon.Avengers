@@ -9,7 +9,7 @@ namespace Avengers.Api.DataAccess
 {
     public class PatientGateway : IGateway<PatientEntity>
     {
-        string _partitionKey = "";
+        string _partitionKey = "patient";
         CloudTable Patients;
 
         public PatientGateway(IAvengersCloudAccess account)

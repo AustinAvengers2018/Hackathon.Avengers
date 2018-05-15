@@ -16,6 +16,14 @@
         { name: "Dirty Doc 2", pct: "60" }
     ];
 
+    $(document).ready(function () {
+        $.ajax({
+            url: "http://localhost:60211/api/Values",
+            type: "Get",
+            success: function (data) { CASES = data; }
+        })
+    });
+
 
     function caseList() {
         var out = '<div class="list-group" id="list-tab" role="tablist">';
@@ -52,13 +60,10 @@
         //this line is to watch the result in console , you can remove it later	
         console.log("Refreshed; active case i = " + activeCase + "; " + content);
     }
-
-
-    $('.list-group').click(function () {
-        $(this).addClass('active').siblings().removeClass('active');
-    });
 </script>
 
+
+@*@model IEnumerable<Avengers.Mvc.Models.Patient>*@
 
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -73,6 +78,13 @@
     <div class="col-md-4 col-sm-4">
         <div id="caseList">
             <script>caseList();</script>
+            <!-- Replace with foreach cshtml -->
+            @*@foreach (var item in Model)
+            {
+                <p>
+                    @Html.DisplayFor(modelItem => item.Ssn)
+                </p>
+            }*@
         </div>
         <div class="navbar">
             <p class="navbar-text">

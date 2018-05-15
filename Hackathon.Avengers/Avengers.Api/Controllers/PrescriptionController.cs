@@ -1,4 +1,5 @@
-﻿using Avengers.Api.Models;
+﻿using Avengers.Api.DataAccess;
+using Avengers.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,18 @@ namespace Avengers.Api.Controllers
 {
     public class PrescriptionController : ApiController
     {
+        readonly FraudStorageRepository _repo;
+
+        public PrescriptionController(IAvengersCloudAccess cloud)
+        {
+            _repo = new FraudStorageRepository(cloud);
+        }
+
+
         // GET: api/Prescription
         public IEnumerable<PatientEntity> Get()
         {
-            return new PatientEntity[] {  };
+            return _repo.Patients.Get();
         }
 
         // GET: api/Prescription/5
