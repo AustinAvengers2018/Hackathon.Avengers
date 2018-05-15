@@ -16,15 +16,6 @@
         { name: "Dirty Doc 2", pct: "60" }
     ];
 
-    $(document).ready(function () {
-        $.ajax({
-            url: "http://localhost:60211/api/Values",
-            type: "Get",
-            success: function (data) { CASES = data; }
-        })
-    });
-
-
     function caseList() {
         var out = '<div class="list-group" id="list-tab" role="tablist">';
         for (var i = 0; i < CASES.length; i++) {
@@ -34,7 +25,7 @@
             }
             out += '" id="list- home - list" data-toggle="list" role="tab" onClick="setActiveCase(' + i + ', this)" href="javascript: reloadDetails()">' + CASES[i].name + '</a>';
         }
-        out += '</dic>';
+        out += '</div>';
         document.getElementById('caseList').innerHTML = out;
     }
 
@@ -63,7 +54,7 @@
 </script>
 
 
-@*@model IEnumerable<Avengers.Mvc.Models.Patient>*@
+@model IEnumerable<Avengers.Mvc.Models.Provider>
 
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -77,14 +68,13 @@
 <div class="row">
     <div class="col-md-4 col-sm-4">
         <div id="caseList">
-            <script>caseList();</script>
-            <!-- Replace with foreach cshtml -->
-            @*@foreach (var item in Model)
-            {
-                <p>
-                    @Html.DisplayFor(modelItem => item.Ssn)
-                </p>
-            }*@
+            <!--<script>caseList();</script>-->
+            <div class="list-group" id="list-tab" role="tablist">
+                @foreach (var item in Model)
+                {
+                    <a class=@(Model.First().Equals(item) ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )  id="list- home - list" data-toggle="list" role="tab" onClick="setActiveCase(0, this)" href="javascript: reloadDetails()">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</a>
+                }
+            </div>
         </div>
         <div class="navbar">
             <p class="navbar-text">

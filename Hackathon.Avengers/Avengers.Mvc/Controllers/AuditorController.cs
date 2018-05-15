@@ -16,7 +16,7 @@ namespace Avengers.Mvc.Controllers
         public AuditorController()
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(ConfigurationManager.AppSettings["baseAzureAddress"]);
+            client.BaseAddress = new Uri("http://localhost:60225/api/");
             var clientWrapper = new HttpClientWrapper(client);
             _providerService = new ProvidersService(clientWrapper);
         }
@@ -24,10 +24,10 @@ namespace Avengers.Mvc.Controllers
         public ActionResult Dashboard()
         {
             var providers = _providerService.GetProviders();
-            var model = BuildDashboardViewModel(providers);
+            //var model = BuildDashboardViewModel(providers);
             ViewBag.Message = "Your contact page.";
 
-            return View(model);
+            return View(providers);
         }
 
         private object BuildDashboardViewModel(IEnumerable<Provider> providers)
