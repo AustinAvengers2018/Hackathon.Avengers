@@ -36,9 +36,12 @@
         element.className += " active";
     }
 
-    function getActiveCaseHeader() {
+    function getActiveCaseHeader(model) {
+        //if (model[activeCase].PartitionKey == "provider") {
+
+        //}
         document.getElementById('activeCaseHeader').innerHTML =
-            CASES[activeCase].pct + "% confident that " + CASES[activeCase].name + " is committing fraud";
+            model[activeCase].FirstName + " " + model[activeCase].LastName + " is suspected of committing fraud";
     }
 
     function reloadDetails() {
@@ -49,7 +52,7 @@
         getActiveCaseHeader();
 
         //this line is to watch the result in console , you can remove it later	
-        console.log("Refreshed; active case i = " + activeCase + "; " + content);
+        console.log("Refreshed; active case i = " + activeCase);
     }
 </script>
 
@@ -78,7 +81,7 @@
         </div>
         <div class="navbar">
             <p class="navbar-text">
-                @Html.ActionLink("Prepare & Send Report >>", "Report", "Auditor")
+                @Html.ActionLink("Ready to Send Report >>", "Report", "Auditor")
             </p>
         </div>
     </div>
@@ -89,7 +92,7 @@
 
             <div class="container">
                 <h1 id="activeCaseHeader">
-                    <script>getActiveCaseHeader();</script>
+                    <script>getActiveCaseHeader(Model);</script>
                 </h1>
                 <h3>Fraud committed by prescriber/provider</h3>
                 <div class="row">
