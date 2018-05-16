@@ -3,45 +3,15 @@
 }
 
 <script>
-    var activeCase = 0;
-
-    const CASES = [
-        { name: "Dirty Doc", pct: "84", zip: "12345", rx_num: "123", npi: "3", drug: "Opioid", supply: "", days_supply: "30", rx_fill_date: "05/15/2018" },
-        { name: "Opioid Addict", pct: "95" },
-        { name: "Innocent Guy", pct: "20" },
-        { name: "Dirty Doc 2", pct: "60" },
-        { name: "Dirty Doc", pct: "84" },
-        { name: "Opioid Addict", pct: "95" },
-        { name: "Innocent Guy", pct: "20" },
-        { name: "Dirty Doc 2", pct: "60" }
-    ];
-
-    function caseList() {
-        var out = '<div class="list-group" id="list-tab" role="tablist">';
-        for (var i = 0; i < CASES.length; i++) {
-            out += '<a class="list-group-item list-group-item-action'
-            if (i == 0) {
-                out += ' active';
-            }
-            out += '" id="list- home - list" data-toggle="list" role="tab" onClick="setActiveCase(' + i + ', this)" href="javascript: reloadDetails()">' + CASES[i].name + '</a>';
-        }
-        out += '</div>';
-        document.getElementById('caseList').innerHTML = out;
-    }
+    var testId = "";
 
     function setActiveCase(index, element) {
         var current = document.getElementsByClassName("active");
         current[0].className = current[0].className.replace(" active", "");
-        activeCase = index;
+        console.log("index = " + index);
+        console.log("testing prov - " + element.id );
+        testId = element.id;
         element.className += " active";
-    }
-
-    function getActiveCaseHeader(model) {
-        //if (model[activeCase].PartitionKey == "provider") {
-
-        //}
-        document.getElementById('activeCaseHeader').innerHTML =
-            model[activeCase].FirstName + " " + model[activeCase].LastName + " is suspected of committing fraud";
     }
 
     function reloadDetails() {
@@ -49,16 +19,44 @@
         var content = container.innerHTML;
         container.innerHTML = content;
 
-        getActiveCaseHeader();
+        //getActiveCaseHeader();
 
-        //this line is to watch the result in console , you can remove it later	
-        console.log("Refreshed; active case i = " + activeCase);
+        //this line is to watch the result in console , you can remove it later
+        console.log("Refreshed; active case i = " + @activeCaseIdx);
     }
 </script>
 
+@functions{
+    public int activeCaseIdx = 0;
+    string test = "";
 
-@model IEnumerable<Avengers.Mvc.Models.Provider>
+    public void GetActiveCase(IEnumerable<Provider> list, string provId)
+    {
+        activeCaseIdx = FindIndex(list, provId);
+        test = provId;
+    }
 
+    //public static int FindIndex<T>(this IEnumerable<T> list, Predicate<T> finder)
+    //{
+    //    // note if item not found, result is length and not -1!
+    //    return list.TakeWhile(i => !finder(i)).Count();
+    //}
+    public static int FindIndex(IEnumerable<Provider> list, string provId)
+    {
+        int i = 0;
+        foreach(var item in list)
+        {
+            if (item.ProviderID.Equals(provId))
+                break;
+            i++;
+        }
+        return i;
+    }
+}
+
+@using Avengers.Mvc.Models;
+@model IEnumerable<Provider>
+                
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -71,11 +69,10 @@
 <div class="row">
     <div class="col-md-4 col-sm-4">
         <div id="caseList">
-            <!--<script>caseList();</script>-->
             <div class="list-group" id="list-tab" role="tablist">
                 @foreach (var item in Model)
                 {
-                    <a class=@(Model.First().Equals(item) ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )  id="list- home - list" data-toggle="list" role="tab" onClick="setActiveCase(0, this)" href="javascript: reloadDetails()">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</a>
+                    <a class="@(FindIndex(Model, item.ProviderID) == 0 ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )"  id="@item.ProviderID" data-toggle="list" role="tab" onClick="setActiveCase(@(FindIndex(Model, item.ProviderID)), this)" href="javascript: reloadDetails()">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</a>
                 }
             </div>
         </div>
@@ -91,23 +88,27 @@
             <br />
 
             <div class="container">
-                <h1 id="activeCaseHeader">
-                    <script>getActiveCaseHeader(Model);</script>
+                <h1 id="activeCaseHeader">@Model.ElementAt(activeCaseIdx).FirstName @Model.ElementAt(activeCaseIdx).LastName suspected of fraud
                 </h1>
-                <h3>Fraud committed by prescriber/provider</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p>Name: Last, First</p>
-                        <p>SSN: {this.props.ssn}</p>
-                        <p>Zip Code: {this.props.zip}</p>
-                        <p>NPI: {this.props.npi}</p>
+                <br />
+                <div class="container"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> @Model.ElementAt(activeCaseIdx).LastName, @Model.ElementAt(activeCaseIdx).FirstName</p>
+                            <p><strong>NPI:</strong> @Model.ElementAt(activeCaseIdx).ProviderID</p>
+                            <p><strong>Specialty:</strong> @Model.ElementAt(activeCaseIdx).Specialty</p>
+                            <p><strong>State:</strong> @Model.ElementAt(activeCaseIdx).State</p>
+                            <p><strong>Zip:</strong> @Model.ElementAt(activeCaseIdx).ZipCode</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Drug:</strong> @Model.ElementAt(activeCaseIdx).Opioid</p>
+                            <p><strong>State Rank:</strong> @Model.ElementAt(activeCaseIdx).StateRank</p>
+                            <p><strong>State 99 Percentile:</strong> @Model.ElementAt(activeCaseIdx).State99Percentile</p>
+                            <p><strong>National Rank:</strong> @Model.ElementAt(activeCaseIdx).NationalRank</p>
+                            <p><strong>National 99 Percentile:</strong> @Model.ElementAt(activeCaseIdx).National99Percentile</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p>Drug: druge_name here</p>
-                        <p>Rx Number: {this.props.rx_num}</p>
-                        <p>Days Supply: num here</p>
-                        <p>Rx Refill Date: xx/xx/xxxx</p>
-                    </div>
+                    <br />
                 </div>
             </div>
 
