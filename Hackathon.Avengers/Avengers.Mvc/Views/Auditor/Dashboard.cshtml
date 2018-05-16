@@ -6,14 +6,10 @@
     var activeCase = 0;
 
     const CASES = [
-        { name: "Dirty Doc", pct: "84", zip: "12345", rx_num: "123", npi: "3", drug: "Opioid", supply: "", days_supply: "30", rx_fill_date: "05/15/2018" },
-        { name: "Opioid Addict", pct: "95" },
-        { name: "Innocent Guy", pct: "20" },
-        { name: "Dirty Doc 2", pct: "60" },
-        { name: "Dirty Doc", pct: "84" },
-        { name: "Opioid Addict", pct: "95" },
-        { name: "Innocent Guy", pct: "20" },
-        { name: "Dirty Doc 2", pct: "60" }
+        { name: "Dirty Doc", pct: "84", zip: "243552", rx_num: "67535134", npi: "3", drug: "Opioid", supply: "1", days_supply: "30", rx_fill_date: "05/05/2018" },
+        { name: "Opioid Addict", pct: "95", zip: "45457", rx_num: "123", npi: "1", drug: "Opioid", supply: "2", days_supply: "30", rx_fill_date: "05/15/2018" },
+        { name: "Innocent Guy", pct: "20", zip: "23479", rx_num: "3884373", npi: "2", drug: "Opioid", supply: "3", days_supply: "30", rx_fill_date: "05/25/2018" },
+        { name: "Dirty Doc 2", pct: "60", zip: "45553", rx_num: "9763537", npi: "3", drug: "Opioid", supply: "4", days_supply: "30", rx_fill_date: "05/20/2018"  }
     ];
 
 
@@ -42,12 +38,57 @@
             CASES[activeCase].pct + "% confident that " + CASES[activeCase].name + " is committing fraud";
     }
 
+    function getActiveCaseName() {
+        document.getElementById('activeCaseName').innerHTML =
+            "Name: " + CASES[activeCase].name;
+    }
+
+    function getActiveCaseZip() {
+        document.getElementById('activeCaseZip').innerHTML =
+            "Zip Code: " + CASES[activeCase].zip;
+    }
+
+    function getActiveCaseRxNum() {
+        document.getElementById('activeCaseRxNum').innerHTML =
+            "RxCode: " + CASES[activeCase].rx_num;
+    }
+
+    function getActiveCaseNpi() {
+        document.getElementById('activeCaseNpi').innerHTML =
+            "NPI: " + CASES[activeCase].npi;
+    }
+
+
+    function getActiveCaseDrug() {
+        document.getElementById('activeCaseDrug').innerHTML =
+            "Drug: " + CASES[activeCase].drug;
+    }
+
+    function getActiveCaseSupply() {
+        document.getElementById('activeCaseSupply').innerHTML =
+            "Supply: " + CASES[activeCase].supply;
+    }
+
+
+    function getActiveCaseRefill() {
+        document.getElementById('activeCaseRefill').innerHTML =
+            "Refill Date: " + CASES[activeCase].rx_fill_date;
+    }
+
     function reloadDetails() {
         var container = document.getElementById("nav-tabContent");
         var content = container.innerHTML;
         container.innerHTML = content;
 
         getActiveCaseHeader();
+        getActiveCaseName();
+        getActiveCaseZip();
+        getActiveCaseRxNum();
+        getActiveCaseNpi();
+        getActiveCaseDrug();
+        getActiveCaseSupply();
+        getActiveCaseRefill();
+
 
         //this line is to watch the result in console , you can remove it later	
         console.log("Refreshed; active case i = " + activeCase + "; " + content);
@@ -92,16 +133,29 @@
                 <h3>Fraud committed by prescriber/provider</h3>
                 <div class="row">
                     <div class="col-md-6">
-                        <p>Name: Last, First</p>
-                        <p>SSN: {this.props.ssn}</p>
-                        <p>Zip Code: {this.props.zip}</p>
-                        <p>NPI: {this.props.npi}</p>
+                        <p id="activeCaseName">
+                            <script>getActiveCaseName();</script>
+                        </p>
+                        <p id="activeCaseZip">
+                            <script>getActiveCaseZip();</script>
+                        </p>
+                        <p id="activeCaseNpi">
+                            <script>getActiveCaseNpi();</script>
+                        </p>
                     </div>
                     <div class="col-md-6">
-                        <p>Drug: druge_name here</p>
-                        <p>Rx Number: {this.props.rx_num}</p>
-                        <p>Days Supply: num here</p>
-                        <p>Rx Refill Date: xx/xx/xxxx</p>
+                        <p id="activeCaseDrug">
+                            <script>getActiveCaseDrug();</script>
+                        </p>
+                        <p id="activeCaseRxNum">
+                            <script>getActiveCaseRxNum();</script>
+                        </p>
+                        <p id="activeCaseSupply">
+                            <script>getActiveCaseSupply();</script>
+                        </p>
+                        <p id="activeCaseRefill">
+                            <script>getActiveCaseRefill();</script>
+                        </p>
                     </div>
                 </div>
             </div>
