@@ -45,11 +45,11 @@ namespace Avengers.Mvc
                 SavePatientsToAzureTable(flaggedPatients);
 
             }
-            else
-            {
-                flaggedProviders = LoadProvidersFromAzureTables();
-                flaggedPatients = LoadPatientsFromAzureTables();
-            }
+            //else
+            //{
+            //    flaggedProviders = LoadProvidersFromAzureTables();
+            //    flaggedPatients = LoadPatientsFromAzureTables();
+            //}
 
 
             if (deleteAzureTables) DeleteAzureTableItems(providers);
