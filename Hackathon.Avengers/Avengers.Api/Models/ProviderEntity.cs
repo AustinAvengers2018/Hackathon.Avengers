@@ -9,9 +9,9 @@ namespace Avengers.Api.Models
 {
     public class ProviderEntity : TableEntity
     {
-        public string PartitionKey { get; set; }
-        public string RowKey { get; set; }
-        public DateTime Timestamp { get; set; }
+        //public string PartitionKey { get; set; }
+        //public string RowKey { get; set; }
+        //public DateTime Timestamp { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int National99Percentile { get; set; }
@@ -31,8 +31,8 @@ namespace Avengers.Api.Models
         public override void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext)
         {
             base.ReadEntity(properties, operationContext);
-            PartitionKey = "provider";
-            RowKey = properties["ProviderID"].StringValue;
+            //PartitionKey = "provider";
+            //RowKey = properties["ProviderID"].StringValue;
             //Timestamp = properties["Timestamp"].DateTime ?? DateTime.Today.AddYears(-50);
             FirstName = properties["FirstName"].StringValue;
             LastName = properties["LastName"].StringValue;

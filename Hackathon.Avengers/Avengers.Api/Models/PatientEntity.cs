@@ -9,9 +9,6 @@ namespace Avengers.Api.Models
 {
     public class PatientEntity : TableEntity
     {
-        public string PartitionKey { get; set; }
-        public string RowKey { get; set; }
-        public DateTime Timestamp { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int MultipleDetectionCount { get; set; }
@@ -22,8 +19,8 @@ namespace Avengers.Api.Models
         public override void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext)
         {
             base.ReadEntity(properties, operationContext);
-            PartitionKey = "patient";
-            RowKey = SSN = properties["Ssn"].StringValue;
+            //PartitionKey = "patient";
+            //RowKey = SSN = properties["Ssn"].StringValue;
             FirstName = properties["FirstName"].StringValue;
             LastName = properties["LastName"].StringValue;
             MultipleDetectionCount = properties["MultipleDetectionCount"].Int32Value ?? int.MinValue;
