@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Avengers.Api.Models
 {
@@ -17,5 +18,17 @@ namespace Avengers.Api.Models
         public int PrescriptionCount { get; set; }
         public string SSN { get; set; }
         public bool  Reviewed { get; set; }
+
+        public override void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext)
+        {
+            base.ReadEntity(properties, operationContext);
+            PartitionKey = "patient";
+            RowKey = SSN = properties["Ssn"].StringValue;
+            FirstName = properties["FirstName"].StringValue;
+            LastName = properties["LastName"].StringValue;
+            MultipleDetectionCount = properties["MultipleDetectionCount"].Int32Value ?? int.MinValue;
+            PrescriptionCount = properties["PrescriptionCount"].Int32Value ?? int.MinValue;
+            Reviewed = properties["Reviewed"].BooleanValue ?? false;
+        }
     }
 }

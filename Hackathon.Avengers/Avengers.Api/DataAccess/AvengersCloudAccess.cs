@@ -52,7 +52,7 @@ namespace Avengers.Api.DataAccess
                 {
                     case "ProviderEntity":
                         return _tableClient.GetTableReference("FlaggedProviders");
-                    case "PerscriptionEntity":
+                    case "PatientEntity":
                         return _tableClient.GetTableReference("FlaggedPatients");
                     default:
                         return new CloudTable(new Uri("http://null.org"));
