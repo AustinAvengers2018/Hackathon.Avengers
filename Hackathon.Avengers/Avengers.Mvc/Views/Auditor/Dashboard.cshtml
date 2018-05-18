@@ -1,102 +1,106 @@
-﻿@{
+﻿@using Avengers.Mvc.Models
+@model DashboardViewModel
+
+@{
     ViewBag.Title = "Auditor Dashboard/Inbox";
 }
 
-<script>
-    var activeCaseIdx = 0;
+@*<script>
+        var activeCaseIdx = 0;
 
-    function setActiveCase(index, element) {
-        var current = document.getElementsByClassName("active");
-        current[0].className = current[0].className.replace(" active", "");
-        console.log("index before = " + activeCaseIdx);
-        activeCaseIdx = index;
-        console.log("index after = " + activeCaseIdx);
-        console.log("testing prov - " + element.id);
-        element.className += " active";
-    }
-
-    function reloadDetails() {
-        var container = document.getElementById("nav-tabContent");
-        var content = container.innerHTML;
-        container.innerHTML = content;
-
-        //AJAX here instead? May need partial view through controller...
-
-        populateDetailView();
-
-        //this line is to watch the result in console , you can remove it later
-        console.log("Refreshed; active case i = " + activeCaseIdx);
-    }
-
-    
-
-    function populateDetailView() {
-        header();
-        detailCol1();
-        detailCol2();
-    }
-
-    function header() {
-        var out = '<h1>@Model.ElementAt(activeCaseIdx).FirstName @Model.ElementAt(activeCaseIdx).LastName suspected of fraud</h1>';
-        document.getElementById('header').innerHTML = out;
-    }
-
-    function detailCol1() {
-        var out = '<p><strong>Name:</strong> @(Model.ElementAt(activeCaseIdx).LastName),@(Model.ElementAt(activeCaseIdx).FirstName)</p>' +
-                    '<p><strong>NPI:</strong> @(Model.ElementAt(activeCaseIdx).ProviderID)</p>' +
-                    '<p><strong>Specialty:</strong> @(Model.ElementAt(activeCaseIdx).Specialty)</p>' +
-                    '<p><strong>State:</strong> @(Model.ElementAt(activeCaseIdx).State)</p>' +
-                    '<p><strong>Zip:</strong> @(Model.ElementAt(activeCaseIdx).ZipCode)</p>';
-        document.getElementById('detailCol1').innerHTML = out;
-    }
-
-    function detailCol2() {
-        var out = '<p><strong>Drug:</strong> @Model.ElementAt(activeCaseIdx).Opioid</p>' +
-            '<p><strong>State Rank:</strong> @Model.ElementAt(activeCaseIdx).StateRank</p>' +
-            '<p><strong>State 99 Percentile:</strong> @Model.ElementAt(activeCaseIdx).State99Percentile</p>' +
-            '<p><strong>National Rank:</strong> @Model.ElementAt(activeCaseIdx).NationalRank</p>' +
-            '<p><strong>National 99 Percentile:</strong> @Model.ElementAt(activeCaseIdx).National99Percentile</p>';
-        document.getElementById('detailCol2').innerHTML = out;
-    }
-</script>
-
-@functions{
-    public int activeCaseIdx = 0;
-    string test = "";
-
-    public void GetActiveCase(IEnumerable<Provider> list, string provId)
-    {
-        activeCaseIdx = FindIndex(list, provId);
-        test = provId;
-    }
-
-    public static int FindIndex(IEnumerable<Provider> list, string provId)
-    {
-        int i = 0;
-        foreach(var item in list)
-        {
-            if (item.ProviderID.Equals(provId))
-                break;
-            i++;
+        function setActiveCase(index, element) {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            console.log("index before = " + activeCaseIdx);
+            activeCaseIdx = index;
+            console.log("index after = " + activeCaseIdx);
+            console.log("testing prov - " + element.id);
+            element.className += " active";
         }
-        return i;
-    }
-}
 
-@using Avengers.Mvc.Models;
-@model IEnumerable<Provider>
-                
+        function reloadDetails() {
+            var container = document.getElementById("nav-tabContent");
+            var content = container.innerHTML;
+            container.innerHTML = content;
+
+            //AJAX here instead? May need partial view through controller...
+
+            populateDetailView();
+
+            //this line is to watch the result in console , you can remove it later
+            console.log("Refreshed; active case i = " + activeCaseIdx);
+        }
+
+
+
+        function populateDetailView() {
+            header();
+            detailCol1();
+            detailCol2();
+        }
+
+        function header() {
+            var out = '<h1>@Model.ElementAt(activeCaseIdx).FirstName @Model.ElementAt(activeCaseIdx).LastName suspected of fraud</h1>';
+            document.getElementById('header').innerHTML = out;
+        }
+
+        function detailCol1() {
+            var out = '<p><strong>Name:</strong> @(Model.ElementAt(activeCaseIdx).LastName),@(Model.ElementAt(activeCaseIdx).FirstName)</p>' +
+                        '<p><strong>NPI:</strong> @(Model.ElementAt(activeCaseIdx).ProviderID)</p>' +
+                        '<p><strong>Specialty:</strong> @(Model.ElementAt(activeCaseIdx).Specialty)</p>' +
+                        '<p><strong>State:</strong> @(Model.ElementAt(activeCaseIdx).State)</p>' +
+                        '<p><strong>Zip:</strong> @(Model.ElementAt(activeCaseIdx).ZipCode)</p>';
+            document.getElementById('detailCol1').innerHTML = out;
+        }
+
+        function detailCol2() {
+            var out = '<p><strong>Drug:</strong> @Model.ElementAt(activeCaseIdx).Opioid</p>' +
+                '<p><strong>State Rank:</strong> @Model.ElementAt(activeCaseIdx).StateRank</p>' +
+                '<p><strong>State 99 Percentile:</strong> @Model.ElementAt(activeCaseIdx).State99Percentile</p>' +
+                '<p><strong>National Rank:</strong> @Model.ElementAt(activeCaseIdx).NationalRank</p>' +
+                '<p><strong>National 99 Percentile:</strong> @Model.ElementAt(activeCaseIdx).National99Percentile</p>';
+            document.getElementById('detailCol2').innerHTML = out;
+        }
+    </script>*@
+
+@*@functions{
+        public int activeCaseIdx = 0;
+        string test = "";
+
+        public void GetActiveCase(IEnumerable<Provider> list, string provId)
+        {
+            activeCaseIdx = FindIndex(list, provId);
+            test = provId;
+        }
+
+        public static int FindIndex(IEnumerable<Provider> list, string provId)
+        {
+            int i = 0;
+            foreach (var item in list)
+            {
+                if (item.ProviderID.Equals(provId))
+                    break;
+                i++;
+            }
+            return i;
+        }
+
+
+    }*@
+
+@*@using Avengers.Mvc.Models;
+    @model IEnumerable<Provider>*@
+
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            Opioid Dashboard - Auditor View 
+            Opioid Dashboard - Auditor View
         </div>
         <p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">Auditor Jane Doe</a> | @Html.ActionLink("Log Out", "Index", "Home")</p>
     </div>
 </div>
-
 <div class="row">
-    <div style="height: 600px; overflow-y: scroll;" class="col-md-4 col-sm-4">
+    <div style="height: 600px;overflow-y: scroll;" class="col-3 bg-primary">
         <div class="navbar">
             <p class="btn bottom-left btn-lg">
                 <a onclick="return confirm('Items marked as fraud sent out for further investigation')">Ready to Send Report &gt;&gt;</a>
@@ -104,32 +108,42 @@
         </div>
         <div id="caseList">
             <div class="list-group" id="list-tab" role="tablist">
-                @foreach (var item in Model)
+                @foreach (var item in Model.Entities)
                 {
-                    <a class="@(FindIndex(Model, item.ProviderID) == 0 ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )"  data-toggle="list" role="tab" onClick="setActiveCase(@(FindIndex(Model, item.ProviderID)), this)" id="refresh" href="#">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</a>
+                    @*<a id="refresh" class="@(FindIndex(Model, item.ProviderID) == 0 ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )"
+                           data-toggle="list" role="tab"
+                           onClick="setActiveCase(@(FindIndex(Model, item.ProviderID)), this)"
+                           href="#">
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+                        </a>*@
+                    <a id="refresh" class="list-group-item list-group-item-action"
+                       data-toggle="list" role="tab">
+                        @Html.HiddenFor(i => item.ID, new { id = "hiddenId" })
+                        @Html.HiddenFor(i => item.Type, new { id = "hiddenType" })
+                        @Html.DisplayFor(i => item.FullName)
+                    </a>
                 }
             </div>
         </div>
     </div>
-    <div class="col-md-8 col-sm-8">
+    <div class="col-9 bg-secondary">
         <div class="tab-content" id="nav-tabContent">
-
             <br />
-
             <div class="container">
-                <div id="header" class="container">
-                    <script>header();</script>
-                </div>
+                @*<div id="header" class="container">
+                        <script>header();</script>
+                    </div>*@
                 <br />
-                <div class="container"></div>
-                    <div class="row">
-                        <div id="detailCol1" class="col-md-6">
+                <div class="row">
+                    @{ var firstEntity = Model.Entities.First(); }
+                    @Html.Action("GetDetailPartialView", firstEntity);
+                    @*<div id="detailCol1" class="col-md-6">
                             <script>detailCol1();</script>
                         </div>
                         <div id="detailCol2" class="col-md-6">
                             <script>detailCol2();</script>
                         </div>
-                    </div>
+                            </div>*@
                     <br />
                 </div>
             </div>
@@ -154,5 +168,28 @@
             </form>
         </div>
     </div>
-</div>
 
+    <script>
+        var SetInitialActiveListItem = function () {
+            $("#list-tab > a:first-child").click();
+        }
+
+        var replaceDetailsPartial = function(newPartial){
+            alert("Processing new partial view: " + newPartial);
+            //$("") 
+        }
+
+        var listItem_OnClick = function (e) {  //e should be "<a>" child of "#list-tab"
+            var element = e.currentTarget;
+            var selectedId = $(element).find("#hiddenId")[0].value;
+            var selectedType = $(element).find("#hiddenType")[0].value;
+            //Call details partial view action
+            $.get("@Url.Action("GetDetailPartialView")/" + selectedId + "/" + selectedType,
+                replaceDetailsPartial);
+        }
+
+        $(document).ready(function () {
+            $("#list-tab > a").click(listItem_OnClick);
+            SetInitialActiveListItem();
+        });
+    </script>

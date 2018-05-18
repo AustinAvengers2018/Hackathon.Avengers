@@ -25,9 +25,9 @@ namespace Avengers.Api.Controllers
         }
 
         // GET: api/Provider/5
-        public ProviderEntity Get(long npi)
+        public ProviderEntity Get(string npi)
         {
-            return _repo.Providers.Find(npi.ToString());
+            return _repo.Providers.Find(npi);
         }
 
         // POST: api/Provider

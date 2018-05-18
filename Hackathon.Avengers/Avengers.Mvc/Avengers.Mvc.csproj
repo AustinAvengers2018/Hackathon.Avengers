@@ -215,6 +215,7 @@
     <Compile Include="Models\AzurePatientEntity.cs" />
     <Compile Include="Models\AzurePrescriptionEntity.cs" />
     <Compile Include="Models\AzureProviderEntity.cs" />
+    <Compile Include="Models\DashboardViewModel.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\Prescription.cs" />
     <Compile Include="Models\Provider.cs" />
@@ -223,6 +224,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AppSettingsWrapper.cs" />
     <Compile Include="Services\HttpClientWrapper.cs" />
+    <Compile Include="Services\ApiService.cs" />
+    <Compile Include="Services\PatientsService.cs" />
     <Compile Include="Services\ProvidersService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +286,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Auditor\Report.cshtml" />
+    <Content Include="Views\Auditor\_ProviderDashboardDetailsPartial.cshtml" />
+    <Content Include="Views\Auditor\_PatientDashboardDetailsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

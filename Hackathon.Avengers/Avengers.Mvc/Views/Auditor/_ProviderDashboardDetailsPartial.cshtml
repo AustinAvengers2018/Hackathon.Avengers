@@ -1,0 +1,24 @@
+﻿@model Avengers.Mvc.Models.Provider
+@{
+    Layout = null;
+}
+
+<h1>Suspicious activity detected for provider: @Model.FirstName @Model.LastName</h1>
+<div id="detailRow" class="container">
+    <div class="row">
+        <div class="col-6">
+            <p><strong>Name:</strong> @Model.LastName,@Model.FirstName</p>
+            <p><strong>NPI:</strong> @Model.ProviderID</p>
+            <p><strong>Specialty:</strong> @Model.Specialty</p>
+            <p><strong>State:</strong> @Model.State</p>
+            <p><strong>Zip:</strong> @Model.ZipCode</p>
+        </div>
+        <div class="col-6">
+            <p><strong>Drug:</strong> @Model.Opioid</p>
+            <p><strong>State Rank:</strong> @Model.StateRank</p>
+            <p><strong>State 99 Percentile:</strong> @Model.State99Percentile</p>
+            <p><strong>National Rank:</strong> @Model.NationalRank</p>
+            <p><strong>National 99 Percentile:</strong> @Model.National99Percentile</p>
+        </div>
+    </div>
+</div>

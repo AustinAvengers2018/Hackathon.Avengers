@@ -1,0 +1,18 @@
+﻿@model Avengers.Mvc.Models.Patient
+
+@{
+    Layout = null;
+}
+
+<h1>Suspicious activity detected for patient: @Model.FirstName @Model.LastName</h1>
+<div id="detailRow" class="container">
+    <div class="row">
+        <div class="col-9">
+            <p><strong>Name:</strong> @Model.LastName, @Model.FirstName </p>
+            <p><strong>SSN:</strong>@Model.Ssn</p>
+            <p><strong>Number of Prescriptions:</strong> @Model.PrescriptionCount</p>
+            <p><strong>Number of Multiple Detections:</strong> @Model.MultipleDetectionCount</p>
+            <p><strong>Zip:</strong> @Model.State</p>
+        </div>
+    </div>
+</div>

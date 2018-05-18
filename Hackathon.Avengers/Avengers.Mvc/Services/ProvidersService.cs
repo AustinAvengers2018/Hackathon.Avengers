@@ -13,25 +13,28 @@ using System.Web;
 
 namespace Avengers.Mvc.Services
 {
-    public class ProvidersService
+    public class ProvidersService: ApiService
     {
-        HttpClientWrapper _client;
 
-        public ProvidersService(HttpClientWrapper apiClient)
+        public ProvidersService(HttpClientWrapper apiClient) : base(apiClient)
         {
-            _client = apiClient;
         }
 
         public IEnumerable<Provider> GetProviders()
         {
-            var response = (_client.GetAsync("Provider") as Task<HttpResponseMessage>).Result;
-            var content = response.Content.ReadAsAsync<JToken>().Result;
+            var jTokenResult = GetAndParseResponse("Provider");
             List<Provider> lProviders = new List<Provider>();
-            foreach( var obj in content )
+            foreach( var obj in jTokenResult )
             {
                 lProviders.Add( new Provider(obj.ToObject<AzureProviderEntity>()));
             }
             return lProviders;
+        }
+
+         internal Provider GetProvider(string id)
+        {
+            var jTokenResult = GetAndParseResponse($"Provider/{id}");
+            return new Provider(jTokenResult.First().ToObject<AzureProviderEntity>());
         }
     }
 }

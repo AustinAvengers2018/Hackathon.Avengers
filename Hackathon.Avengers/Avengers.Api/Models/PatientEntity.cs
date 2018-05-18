@@ -19,8 +19,7 @@ namespace Avengers.Api.Models
         public override void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext)
         {
             base.ReadEntity(properties, operationContext);
-            //PartitionKey = "patient";
-            //RowKey = SSN = properties["Ssn"].StringValue;
+            SSN = properties["Ssn"].StringValue;
             FirstName = properties["FirstName"].StringValue;
             LastName = properties["LastName"].StringValue;
             MultipleDetectionCount = properties["MultipleDetectionCount"].Int32Value ?? int.MinValue;
