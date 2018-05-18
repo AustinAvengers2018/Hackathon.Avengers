@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "Auditor Dashboard/Inbox";
+    ViewBag.CaseIndex = 0;
 }
 
 <script>
@@ -11,7 +12,6 @@
         console.log("index before = " + activeCaseIdx);
         activeCaseIdx = index;
         console.log("index after = " + activeCaseIdx);
-        console.log("testing prov - " + element.id);
         element.className += " active";
     }
 
@@ -28,7 +28,7 @@
         console.log("Refreshed; active case i = " + activeCaseIdx);
     }
 
-    
+
 
     function populateDetailView() {
         header();
@@ -61,15 +61,7 @@
 </script>
 
 @functions{
-    public int activeCaseIdx = 0;
-    string test = "";
-
-    public void GetActiveCase(IEnumerable<Provider> list, string provId)
-    {
-        activeCaseIdx = FindIndex(list, provId);
-        test = provId;
-    }
-
+    int activeCaseIdx = 0;
     public static int FindIndex(IEnumerable<Provider> list, string provId)
     {
         int i = 0;
@@ -101,12 +93,13 @@
             <p class="btn bottom-left btn-lg">
                 <a onclick="return confirm('Items marked as fraud sent out for further investigation')">Ready to Send Report &gt;&gt;</a>
             </p>
+            <p>@Html.Action("UpdateIndex", new { newIdx = "3" })</p>
         </div>
         <div id="caseList">
             <div class="list-group" id="list-tab" role="tablist">
                 @foreach (var item in Model)
                 {
-                    <a class="@(FindIndex(Model, item.ProviderID) == 0 ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )"  data-toggle="list" role="tab" onClick="setActiveCase(@(FindIndex(Model, item.ProviderID)), this)" id="refresh" href="#">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</a>
+                    <a class="@(FindIndex(Model, item.ProviderID) == 0 ? "list-group-item list-group-item-action active" : "list-group-item list-group-item-action" )"  data-toggle="list" role="tab" onClick="setActiveCase(@(FindIndex(Model, item.ProviderID)), this)" id="refresh" href="javascript: refreshDetails()">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</a>
                 }
             </div>
         </div>
@@ -117,21 +110,22 @@
             <br />
 
             <div class="container">
+                <p>@ViewBag.CaseIndex</p>
                 <div id="header" class="container">
                     <script>header();</script>
                 </div>
                 <br />
                 <div class="container"></div>
-                    <div class="row">
-                        <div id="detailCol1" class="col-md-6">
-                            <script>detailCol1();</script>
-                        </div>
-                        <div id="detailCol2" class="col-md-6">
-                            <script>detailCol2();</script>
-                        </div>
+                <div class="row">
+                    <div id="detailCol1" class="col-md-6">
+                        <script>detailCol1();</script>
                     </div>
-                    <br />
+                    <div id="detailCol2" class="col-md-6">
+                        <script>detailCol2();</script>
+                    </div>
                 </div>
+                <br />
+</div>
             </div>
 
             <form>

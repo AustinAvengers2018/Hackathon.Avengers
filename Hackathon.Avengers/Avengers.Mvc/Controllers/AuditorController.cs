@@ -26,8 +26,14 @@ namespace Avengers.Mvc.Controllers
             var providers = _providerService.GetProviders();
             //var model = BuildDashboardViewModel(providers);
             ViewBag.Message = "Your contact page.";
+            ViewBag.CaseIndex = UpdateIndex(0);
 
             return View(providers);
+        }
+
+        public Int32 UpdateIndex(Int32 newIdx)
+        {
+            return newIdx;
         }
 
         private object BuildDashboardViewModel(IEnumerable<Provider> providers)
