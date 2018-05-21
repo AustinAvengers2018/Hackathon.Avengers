@@ -15,6 +15,8 @@ namespace Avengers.Mvc.Controllers
     {
         ProvidersService _providerService;
         PatientsService _patientService;
+        IEnumerable<Provider> _providers;
+        IEnumerable<Patient> _patients;
 
         public AuditorController()
         {
@@ -35,18 +37,18 @@ namespace Avengers.Mvc.Controllers
 
         private DashboardViewModel GetDashboardViewModel()
         {
-            var providers = _providerService.GetProviders();
-            var patients = _patientService.GetPatients();
+            _providers = _providerService.GetProviders();
+            _patients = _patientService.GetPatients();
             var dashboardEntities = new List<DashboardEntity>();
 
-            providers.ForEach(p => dashboardEntities.Add(new DashboardEntity { ID = p.ProviderID, FullName = $"{p.FirstName} {p.LastName}", Type = "provider", Entity = p }));
-            patients.ForEach(p => dashboardEntities.Add(new DashboardEntity { ID = p.Ssn, FullName = $"{p.FirstName} {p.LastName}", Type = "patient", Entity = p }));
+            _providers.ForEach(p => dashboardEntities.Add(new DashboardEntity { ID = p.ProviderID, FullName = $"{p.FirstName} {p.LastName}", Type = "provider", Entity = p }));
+            _patients.ForEach(p => dashboardEntities.Add(new DashboardEntity { ID = p.Ssn, FullName = $"{p.FirstName} {p.LastName}", Type = "patient", Entity = p }));
 
             return new DashboardViewModel { Entities = dashboardEntities.OrderBy(x => x.FullName) };
         }
 
         [Route("/GetDetailPartialView/{id}/{type}")]
-        public ActionResult GetDetailPartialView(string id, string type)
+        public PartialViewResult GetDetailPartialView(string id, string type)
         {
             var entity = GetEntity(id, type);
             if (entity == null)
@@ -60,19 +62,15 @@ namespace Avengers.Mvc.Controllers
             switch (type)
             {
                 case "provider":
-                    return _providerService.GetProvider(id);
+                    // This call takes FOREVERRRR
+                    _providers = _providerService.GetProviders();
+                    return _providerService.GetProvider(id, _providers);
                 case "patient":
-                    return _patientService.GetPatient(id);
+                    _patients = _patientService.GetPatients();
+                    return _patientService.GetPatient(id, _patients);
                 default:
                     return null;
             }
-        }
-
-        public ActionResult Report()
-        {
-            ViewBag.Message = "Your report page.";
-
-            return View();
         }
     }
 }

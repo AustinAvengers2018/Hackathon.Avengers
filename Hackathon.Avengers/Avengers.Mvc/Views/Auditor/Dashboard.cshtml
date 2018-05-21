@@ -100,7 +100,7 @@
     </div>
 </div>
 <div class="row">
-    <div style="height: 600px;overflow-y: scroll;" class="col-3 bg-primary">
+    <div style="height: 600px;overflow-y: scroll;" class="col-md-4 bg-primary">
         <div class="navbar">
             <p class="btn bottom-left btn-lg">
                 <a onclick="return confirm('Items marked as fraud sent out for further investigation')">Ready to Send Report &gt;&gt;</a>
@@ -126,7 +126,7 @@
             </div>
         </div>
     </div>
-    <div class="col-9 bg-secondary">
+    <div class="col-md-8 bg-secondary">
         <div class="tab-content" id="nav-tabContent">
             <br />
             <div class="container">
@@ -134,9 +134,9 @@
                         <script>header();</script>
                     </div>*@
                 <br />
-                <div class="row">
+                <div id="testing" class="row">
                     @{ var firstEntity = Model.Entities.First(); }
-                    @Html.Action("GetDetailPartialView", firstEntity);
+                    @Html.Action("GetDetailPartialView", firstEntity)
                     @*<div id="detailCol1" class="col-md-6">
                             <script>detailCol1();</script>
                         </div>
@@ -168,28 +168,69 @@
             </form>
         </div>
     </div>
+</div>
 
     <script>
         var SetInitialActiveListItem = function () {
-            $("#list-tab > a:first-child").click();
+            $("#list-tab a").first().addClass("active");
+            //$("#list-tab a").first().click();
+            console.log("set init");
         }
 
-        var replaceDetailsPartial = function(newPartial){
+        var replaceDetailsPartial = function (newPartial) {
             alert("Processing new partial view: " + newPartial);
-            //$("") 
+            //$("")
         }
 
         var listItem_OnClick = function (e) {  //e should be "<a>" child of "#list-tab"
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            e.currentTarget.className += " active";
+
             var element = e.currentTarget;
             var selectedId = $(element).find("#hiddenId")[0].value;
             var selectedType = $(element).find("#hiddenType")[0].value;
+            console.log("selectedId = " + selectedId + ", selectedType = " + selectedType);
             //Call details partial view action
-            $.get("@Url.Action("GetDetailPartialView")/" + selectedId + "/" + selectedType,
-                replaceDetailsPartial);
+            @*$.get("@Url.Action("GetDetailPartialView")/" + selectedId + "/" + selectedType,
+                replaceDetailsPartial);*@
+
+            $('.list-group-item').click(function () {
+
+                //$.post('/Auditor/GetDetailPartialView/' + selectedId + '/' + selectedType,
+                //    '{id: "' + selectedId + '", type: "' + selectedType + '" }',
+                //    function (response) {
+                //        $("#testing").html(response);
+                //    }
+                //    );
+                //});
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetDetailPartialView", "Auditor")",
+                        data: '{id: "' + selectedId + '", type: "' + selectedType + '" }',
+                        contentType: "application/json; charset=utf-8",
+                        //dataType: "json",
+                        success: function (response) {
+                            console.log("Successful POST");
+                            $("#testing").html(response);
+                            //replaceDetailsPartial();
+                        },
+                        failure: function (response) {
+                            console.log("failure: " + response.responseText);
+                        },
+                        error: function (response, errorThrown) {
+                            console.log("error: " + selectedId + ", " + selectedType + ", " + response.responseText + ", " + errorThrown);
+                        }
+                    });
+                });
+
+            console.log("listItem_OnClick");
         }
 
         $(document).ready(function () {
             $("#list-tab > a").click(listItem_OnClick);
             SetInitialActiveListItem();
+            console.log("doc.ready called");
         });
     </script>

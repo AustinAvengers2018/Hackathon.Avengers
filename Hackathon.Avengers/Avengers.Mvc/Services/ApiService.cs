@@ -15,8 +15,17 @@ namespace Avengers.Mvc.Services
 
         public JToken GetAndParseResponse(string route)
         {
-            var response = (_client.GetAsync(route) as Task<HttpResponseMessage>).Result;
-            return response.Content.ReadAsAsync<JToken>().Result;
+            try
+            {
+                var response = (_client.GetAsync(route) as Task<HttpResponseMessage>).Result;
+                return response.Content.ReadAsAsync<JToken>().Result;
+            }
+            catch (TaskCanceledException ex)
+            {
+                // Check ex.CancellationToken.IsCancellationRequested here.
+                // If false, it's pretty safe to assume it was a timeout.
+                return false;
+            }
         }
 
     }

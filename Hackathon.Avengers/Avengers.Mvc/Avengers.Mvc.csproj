@@ -285,7 +285,6 @@
     <Content Include="Views\Auditor\Dashboard.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
-    <Content Include="Views\Auditor\Report.cshtml" />
     <Content Include="Views\Auditor\_ProviderDashboardDetailsPartial.cshtml" />
     <Content Include="Views\Auditor\_PatientDashboardDetailsPartial.cshtml" />
   </ItemGroup>

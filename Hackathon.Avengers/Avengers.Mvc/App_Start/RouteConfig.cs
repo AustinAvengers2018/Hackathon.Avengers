@@ -18,6 +18,12 @@ namespace Avengers.Mvc
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                "GetDetailPartialView",                                           // Route name
+                "GetDetailPartialView/{id}/{type}",                            // URL with parameters
+                new { controller = "Auditor", action = "Dashboard" }  // Parameter defaults
+            );
         }
     }
 }

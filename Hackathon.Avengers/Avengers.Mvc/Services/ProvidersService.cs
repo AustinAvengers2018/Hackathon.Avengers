@@ -31,10 +31,20 @@ namespace Avengers.Mvc.Services
             return lProviders;
         }
 
-         internal Provider GetProvider(string id)
+         internal Provider GetProvider(string id, IEnumerable<Provider> providers)
         {
-            var jTokenResult = GetAndParseResponse($"Provider/{id}");
-            return new Provider(jTokenResult.First().ToObject<AzureProviderEntity>());
+            //_jTokenResult = _jTokenResult == null ? GetAndParseResponse("Provider") : _jTokenResult;
+            Provider chosen = null;
+            foreach(var token in providers)
+            {
+                var provId = token.ProviderID;       //token["ProviderID"].ToString();
+                if(provId.Equals(id))
+                {
+                    chosen = token;
+                    break;
+                }
+            }
+            return chosen;     //new Provider(chosen.ToObject<AzureProviderEntity>());
         }
     }
 }

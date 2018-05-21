@@ -29,10 +29,21 @@ namespace Avengers.Mvc.Services
             return patientList;
         }
 
-        internal object GetPatient(string id)
+        internal object GetPatient(string id, IEnumerable<Patient> patients)
         {
-            var jTokenResult = GetAndParseResponse($"Patient/{id}");
-            return new Patient(jTokenResult.First().ToObject<AzurePatientEntity>());
+            //var jTokenResult = GetAndParseResponse("Patient");
+            Patient chosen = null;
+            foreach (var token in patients)
+            {
+                var ssn = token.Ssn;       //token["ProviderID"].ToString();
+                if (ssn.Equals(id))
+                {
+                    chosen = token;
+                    break;
+                }
+            }
+            return chosen;
+            //return new Patient(jTokenResult.First().ToObject<AzurePatientEntity>());
         }
     }
 }
